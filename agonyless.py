@@ -20,7 +20,7 @@ def main():
     overall_result = True
 
     acknowledgement = input('Do you assume all responsibilities from running these scripts? <YES> to continue ')
-    if acknowledgement.upper() != 'yes':
+    if acknowledgement.upper() != 'YES':
         p_trace('You must type YES to continue - exiting')
         return False
 
