@@ -1,0 +1,18 @@
+
+# Quick and dirty config file. Adapt as needed. Current use is to feed agonyless.py the information
+# needed to update passwords.
+
+network_entities:
+  - 192.168.100.27
+  # - 192.168.100.27
+
+credentials:
+  uname: monitor
+  monitor_passwd: agni123
+  admin_passwd: agni123
+  port: 220
+  role: cpe
+
+new_passwords:
+  monitor_passwd_new: agni123
+  admin_passwd_new: agni123
