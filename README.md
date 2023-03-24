@@ -36,4 +36,4 @@ Update the config.yml file
  - Update the credentials section with the current usernames and passwords.
  - Update the new_passwords section with the new monitor and admin user passwords.
 
-Run the script and pray to your favorite deity.
+Run the agonyless.py script and pray to your favorite deity.

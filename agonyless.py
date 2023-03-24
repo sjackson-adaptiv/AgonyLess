@@ -1,8 +1,8 @@
 #!/usr/bin/env python
-import pdb
 import ssh_drv
 import ssh_lib
 import yaml
+from cmn_lib import p_trace
 
 __version__ = '0.1'
 
@@ -18,6 +18,11 @@ def main():
 
     # Kick it!
     overall_result = True
+
+    acknowledgement = input('Do you assume all responsibilities from running these scripts? <YES> to continue ')
+    if acknowledgement.upper() != 'yes':
+        p_trace('You must type YES to continue - exiting')
+        return False
 
     yaml_file = './config.yml'
     with open(yaml_file, 'r') as agony_yml:
