@@ -72,7 +72,7 @@ def cli_get_resp(fh_ssh, cli_node, cli_cmd, obj_names):
     :param cli_node: The node under which the command is located
     :param cli_cmd: The cli command to be executed
     :param obj_names: The full list of object names returned by the command.
-                      This list is used to build up the dict, as well as screen scrape delimeter.
+                      This list is used to build up the dict, as well as screen scrape delimiter.
     :return: output_parsed - A dict of objects and values based the cmd output,
              or False in case of error
     """
@@ -99,7 +99,7 @@ def cli_get_resp(fh_ssh, cli_node, cli_cmd, obj_names):
                 update = False
                 break
 
-        # Escape brackets () for regexp, other wise entire line used as data
+        # Escape brackets () for regexp, otherwise entire line used as data
         obj = re.sub(r'([\(\)])', r'\\\1', obj)
         m = re.search(f'(^{obj} *:)(.*)', line)
         if m:
@@ -212,7 +212,12 @@ def cli_update_password(fh_ssh, uname, passwd_old, passwd_new):
     """
     cli_nav(fh_ssh, 'system')
     output = fh_ssh.send(f'set password {uname} {passwd_old} {passwd_new}')
-    fh_ssh.uname = passwd_new
+
+    if output[0]:
+        fh_ssh.uname = passwd_new
+    else:
+        p_trace(f'Something unexpected happened - {putput[1]}', 'ERROR')
+
     return output[0]
 
 

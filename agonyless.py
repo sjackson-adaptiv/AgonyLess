@@ -22,7 +22,6 @@ def main():
     yaml_file = './config.yml'
     with open(yaml_file, 'r') as agony_yml:
         ne_conf = yaml.load(agony_yml, Loader=yaml.FullLoader)
-        agony_yml.close()
 
     for ne in ne_conf['network_entities']:
 
@@ -32,10 +31,10 @@ def main():
             p_trace('Quitting')
             return False
 
-        # Break out the variables to login
+        # Break out the variables for initial login
         uname = ne_conf['credentials']['uname']
-        mp = ne_conf['credentials']['monitor_passwd']
-        ap = ne_conf['credentials']['admin_passwd']
+        mp = ne_conf['credentials']['monitor']
+        ap = ne_conf['credentials']['admin']
         port = ne_conf['credentials']['port']
         role = ne_conf['credentials']['role']
 
@@ -45,11 +44,20 @@ def main():
         ssh_lib.cli_get_ver(ssh)
 
         # Update the passwords
-        mpn = ne_conf['new_passwords']['monitor_passwd_new']
-        apn = ne_conf['new_passwords']['admin_passwd_new']
-        ssh_lib.cli_update_password(ssh, 'monitor', mp, mpn)
-        ssh_lib.cli_update_password(ssh, 'admin', ap, apn)
-        ssh_lib.cli_save_config(ssh)
+        for user in ['monitor', 'admin']:
+            pw_old = ne_conf['credentials'][user]
+            pw_new = ne_conf['new_passwords'][user]
+
+            if not ssh_lib.cli_update_password(ssh, user, pw_old, pw_new):
+                p_trace(f"Unable to update user '{user}'", 'ERROR')
+                overall_result = False
+                break
+            else:
+                ssh_lib.cli_save_config(ssh)
+
+        if not overall_result:
+            p_trace(f'Bailing out due to previous failure updating CPE {ne}', 'ERROR')
+            break
 
     return overall_result
 

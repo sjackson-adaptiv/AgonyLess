@@ -209,7 +209,6 @@ class SSH(object):
                 line = line.replace('\t', '    ')
                 password = 'unknown'
                 if line.startswith('Password:') or line.startswith('Admin Password:'):
-
                     if cmd == 'admin' or 'set password' in cmd:
                         password = self.admin_passwd
                     elif cmd == 'level3':

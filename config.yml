@@ -8,11 +8,11 @@ network_entities:
 
 credentials:
   uname: monitor
-  monitor_passwd: agni1234
-  admin_passwd: agni1234
+  monitor: agni123
+  admin: agni123
   port: 220
   role: cpe
 
 new_passwords:
-  monitor_passwd_new: agni123
-  admin_passwd_new: agni123
+  monitor: agni123
+  admin: agni123
