@@ -1,6 +1,7 @@
 import paramiko
 import time
 import re
+import pdb
 from cmn_lib import p_trace
 
 """
@@ -62,6 +63,8 @@ class SSH(object):
                 self.role = value
             if name == 'monitor_passwd':
                 self.monitor_passwd = value
+            if name == 'admin_passwd':
+                self.admin_passwd = value
 
         p_trace(f'Attempting to establish ssh connection to '
                 f'{host_id}:{self.port} as {user_name} / {password}')
@@ -206,12 +209,14 @@ class SSH(object):
                 line = line.replace('\t', '    ')
                 password = 'unknown'
                 if line.startswith('Password:') or line.startswith('Admin Password:'):
+
                     if cmd == 'admin' or 'set password' in cmd:
                         password = self.admin_passwd
                     elif cmd == 'level3':
                         password = self.l3_password
                     elif cmd == 'diag' or cmd == '/diag':
                         password = self.diag_passwd
+
                     self.channel.send(f'{password}\n')
                     line = ''
 

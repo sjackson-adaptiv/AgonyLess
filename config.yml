@@ -8,8 +8,8 @@ network_entities:
 
 credentials:
   uname: monitor
-  monitor_passwd: agni123
-  admin_passwd: agni123
+  monitor_passwd: agni1234
+  admin_passwd: agni1234
   port: 220
   role: cpe
 

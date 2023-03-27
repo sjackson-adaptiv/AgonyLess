@@ -72,7 +72,7 @@ def cli_get_resp(fh_ssh, cli_node, cli_cmd, obj_names):
     :param cli_node: The node under which the command is located
     :param cli_cmd: The cli command to be executed
     :param obj_names: The full list of object names returned by the command.
-                      This list is used to build up the dict, as well as screen srape delimeter.
+                      This list is used to build up the dict, as well as screen scrape delimeter.
     :return: output_parsed - A dict of objects and values based the cmd output,
              or False in case of error
     """
