@@ -27,9 +27,9 @@ def main():
     for ne in ne_conf['network_entities']:
 
         # Prompt between each CPE
-        acknowledgement = input('Are you ready to continue? <Y | YES> to continue')
-        if acknowledgement.upper() != 'Y' or acknowledgement.upper() != 'YES':
-            p_trace('You must enter Y | YES to continue - exiting')
+        prompt = input('Are you ready to continue? y to continue:\n')
+        if prompt != 'y':
+            p_trace('Quitting')
             return False
 
         # Break out the variables to login
