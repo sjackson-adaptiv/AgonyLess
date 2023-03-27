@@ -49,14 +49,13 @@ def main():
             pw_new = ne_conf['new_passwords'][user]
 
             if not ssh_lib.cli_update_password(ssh, user, pw_old, pw_new):
-                p_trace(f"Unable to update user '{user}'", 'ERROR')
                 overall_result = False
                 break
-            else:
-                ssh_lib.cli_save_config(ssh)
 
-        if not overall_result:
-            p_trace(f'Bailing out due to previous failure updating CPE {ne}', 'ERROR')
+        if overall_result:
+            ssh_lib.cli_save_config(ssh)
+        else:
+            p_trace(f'Aborting due to failure updating password for  user {user} on CPE {ne}', 'ERROR')
             break
 
     return overall_result
