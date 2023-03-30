@@ -213,10 +213,11 @@ def cli_update_password(fh_ssh, uname, passwd_old, passwd_new):
     cli_nav(fh_ssh, 'system')
     output = fh_ssh.send(f'set password {uname} {passwd_old} {passwd_new}')
 
-    if output[0]:
-        fh_ssh.uname = passwd_new
+    if not output[0] or not output[1]:
+        p_trace(f'Something unexpected happened - {output[1]}', 'ERROR')
+        return False
     else:
-        p_trace(f'Something unexpected happened - {putput[1]}', 'ERROR')
+        fh_ssh.uname = passwd_new
 
     return output[0]
 

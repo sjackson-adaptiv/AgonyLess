@@ -119,7 +119,7 @@ class SSH(object):
                 self.os = 'AgniOS'
                 self.cpu = '64Bit'
                 self.io_mode = 'raw'
-                self.channel = self.fh_ssh.invoke_shell()
+                self.channel = self.fh_ssh.invoke_shell(term='vt100', width=80, height=24, width_pixels=0, height_pixels=0, environment=None)
 
                 time.sleep(1)
                 welcome_msg = self.channel.recv(9999).decode("ascii")
@@ -200,14 +200,17 @@ class SSH(object):
             # RAW CHANNEL MODE required for Adaptiv AgniOS
             self.channel.setblocking(1)
             self.channel.send(f'{cmd}\n')
+            time.sleep(1)
             lines = []
             line = ''
             skip_fst_line = True
+            empty_channel = False
 
             while True:
                 line += self.channel.recv(1).decode('ascii')
                 line = line.replace('\t', '    ')
                 password = 'unknown'
+
                 if line.startswith('Password:') or line.startswith('Admin Password:'):
                     if cmd == 'admin' or 'set password' in cmd:
                         password = self.admin_passwd
@@ -216,8 +219,11 @@ class SSH(object):
                     elif cmd == 'diag' or cmd == '/diag':
                         password = self.diag_passwd
 
+                    p_trace('  <--  %s' % line)
+                    p_trace(f"  -->  '{password}' to {self.sys_name} ({self.host_id})")
                     self.channel.send(f'{password}\n')
                     line = ''
+
 
                 elif line.endswith('(Yes/No) ?'):
                     self.channel.send(f'y\n')
@@ -241,6 +247,15 @@ class SSH(object):
 
                 elif line.endswith('# ') or line.endswith('> ') or line.endswith('#    '):
                     line = line.replace('\r\n', '')
+
+                    # HACK ALERT - this is to handle some CPEs that have strange behaviour
+                    # Observed when sending set password <USER> <OLD> <NEW>
+                    # Garbled escape codes or nothing coming back from CPE after that cmd.
+                    if '\r\x1b' in line:
+                        line = 'Password:'
+                        empty_channel = True
+                        continue
+
                     line = line.replace(' ', '')
                     # non diag prompts
                     m = re.search(f'(.*)({self.sys_name}.*)', line)
@@ -260,6 +275,9 @@ class SSH(object):
                 for line in lines:
                     ssh_response.append(line)
                 p_trace('  <--  output of last cmd intentionally suppressed')
+
+        if empty_channel:
+            self.channel.recv(65535).decode("utf-8")
 
         ssh_result = (cmd_result, ssh_response)
         return ssh_result
