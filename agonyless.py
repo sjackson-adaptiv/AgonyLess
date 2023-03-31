@@ -27,10 +27,10 @@ def main():
     for ne in ne_conf['network_entities']:
 
         # Prompt between each CPE
-        # prompt = input('Are you ready to continue? y to continue:\n')
-        # if prompt != 'y':
-        #     p_trace('Quitting')
-        #     return False
+        prompt = input('Are you ready to continue? y to continue:\n')
+        if prompt != 'y':
+            p_trace('Quitting')
+            return False
 
         # Break out the variables for initial login
         uname = ne_conf['credentials']['uname']
@@ -45,8 +45,7 @@ def main():
         # ssh_lib.cli_get_ver(ssh)
 
         # Update the passwords
-        # for user in ['monitor', 'admin']:
-        for user in ['monitor']:
+        for user in ['monitor', 'admin']:
             pw_old = ne_conf['credentials'][user]
             pw_new = ne_conf['new_passwords'][user]
 
@@ -54,10 +53,10 @@ def main():
                 overall_result = False
                 break
 
-    if overall_result:
-        ssh_lib.cli_save_config(ssh)
-    else:
-        p_trace(f'Aborting due to failure updating password for  user {user} on CPE {ne}', 'ERROR')
+        if overall_result:
+            ssh_lib.cli_save_config(ssh)
+        else:
+            p_trace(f'Aborting due to failure updating password for  user {user} on CPE {ne}', 'ERROR')
 
     return overall_result
 
