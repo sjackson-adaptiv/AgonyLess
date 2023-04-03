@@ -217,7 +217,10 @@ def cli_update_password(fh_ssh, uname, passwd_old, passwd_new):
         p_trace(f'Something unexpected happened - {output[1]}', 'ERROR')
         return False
     else:
-        fh_ssh.uname = passwd_new
+        if uname == 'monitor':
+            fh_ssh.monitor_passwd = passwd_new
+        elif uname == 'admin':
+            fh_ssh.admin_passwd = passwd_new
 
     return output[0]
 
