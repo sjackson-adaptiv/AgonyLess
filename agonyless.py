@@ -41,7 +41,9 @@ def main():
 
         # Establish the ssh session & memo the version
         ssh = ssh_drv.SSH()
-        ssh.open(ne, role, uname, mp, port=port, role=role, monitor_passwd=mp, admin_passwd=ap)
+        if not ssh.open(ne, role, uname, mp, port=port, role=role, monitor_passwd=mp, admin_passwd=ap):
+            p_trace('Unable to log into host - game over!', 'ERROR')
+            return False
 
         # Update the passwords
         for user in ['monitor', 'admin']:
