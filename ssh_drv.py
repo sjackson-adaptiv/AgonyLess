@@ -3,7 +3,6 @@ import time
 import re
 import pdb
 from cmn_lib import p_trace
-from colorama import Fore
 
 """
 This file contains the class that implements the ssh interface to a
@@ -67,19 +66,20 @@ class SSH(object):
             if name == 'admin_passwd':
                 self.admin_passwd = value
 
-        p_trace(Fore.YELLOW + f'Attempting to establish ssh connection to '
-                f'{host_id}:{self.port} as {user_name} / {password}' + Fore.RESET)
+        p_trace(f'Attempting to establish ssh connection to '
+                f'{host_id}:{self.port} as {user_name} / {password}', 'DEBUG')
 
         try:
             self.fh_ssh = paramiko.SSHClient()
             self.fh_ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
             self.fh_ssh.connect(host_id, port=self.port, username=user_name, password=password, timeout=60)
         except paramiko.AuthenticationException:
-            log_string = Fore.RED + f'Authentication failed when connecting to {host_id} as {user_name} / {password}'
+            log_string = f'Authentication failed when connecting to {host_id} as {user_name} / {password}'
+            p_trace(log_string, 'ERROR')
             result = False
         except paramiko.BadHostKeyException:
-            log_string = Fore.RED + 'The host key given by the SSH server did not match what we were expecting'
-            p_trace(log_string + Fore.RESET)
+            log_string = 'The host key given by the SSH server did not match what we were expecting'
+            p_trace(log_string, 'ERROR')
             result = False
 
         if result:
@@ -136,9 +136,9 @@ class SSH(object):
                     self.os = f'AgniOS-{m_ver.group(2)}'
                 p_trace(welcome_msg)
 
-            log_string = Fore.GREEN + f'SSH connection established with {host_id} ({sys_name}) : {self.os}/{self.cpu}'
-
-        p_trace(log_string + Fore.RESET)
+            log_string = f'SSH connection established with {host_id} ({sys_name}) : {self.os}/{self.cpu}'
+            p_trace(log_string, 'PASS')
+        # p_trace(log_string)
         return result
 
     def send(self, cmd, suppress_logs=False):
@@ -264,7 +264,7 @@ class SSH(object):
             if not suppress_logs:
                 for line in lines:
                     ssh_response.append(line)
-                    p_trace('  <--  %s' % line)
+                    p_trace(f'  <--  {line}')
             else:
                 for line in lines:
                     ssh_response.append(line)
