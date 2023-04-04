@@ -17,5 +17,5 @@ setup(
     url='https://github.com/TeloipInc/AgonyLess',
     license=f_license,
     packages=find_packages(),
-    install_requires=['paramiko', 'pyyaml']
+    install_requires=['paramiko', 'pyyaml', 'colorama']
 )

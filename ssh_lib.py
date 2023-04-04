@@ -4,7 +4,6 @@ import re
 import pdb
 from cmn_lib import p_trace
 
-
 """
 This library is meant to be used in conjunction with ssh_drv instances.
 The functions contained within are performed on the remote agnonyOS host over

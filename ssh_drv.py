@@ -67,7 +67,7 @@ class SSH(object):
                 self.admin_passwd = value
 
         p_trace(f'Attempting to establish ssh connection to '
-                f'{host_id}:{self.port} as {user_name} / {password}')
+                f'{host_id}:{self.port} as {user_name} / {password}', 'DEBUG')
 
         try:
             self.fh_ssh = paramiko.SSHClient()
@@ -75,10 +75,11 @@ class SSH(object):
             self.fh_ssh.connect(host_id, port=self.port, username=user_name, password=password, timeout=60)
         except paramiko.AuthenticationException:
             log_string = f'Authentication failed when connecting to {host_id} as {user_name} / {password}'
+            p_trace(log_string, 'ERROR')
             result = False
         except paramiko.BadHostKeyException:
             log_string = 'The host key given by the SSH server did not match what we were expecting'
-            p_trace(log_string)
+            p_trace(log_string, 'ERROR')
             result = False
 
         if result:
@@ -136,8 +137,8 @@ class SSH(object):
                 p_trace(welcome_msg)
 
             log_string = f'SSH connection established with {host_id} ({sys_name}) : {self.os}/{self.cpu}'
-
-        p_trace(log_string)
+            p_trace(log_string, 'PASS')
+        # p_trace(log_string)
         return result
 
     def send(self, cmd, suppress_logs=False):
@@ -222,7 +223,7 @@ class SSH(object):
                     elif cmd == 'diag' or cmd == '/diag':
                         password = self.diag_passwd
 
-                    p_trace('  <--  %s' % line)
+                    p_trace(f'  <--  {line}')
                     p_trace(f"  -->  '{password}' to {self.sys_name} ({self.host_id})")
                     self.channel.send(f'{password}\n')
                     line = ''
@@ -263,7 +264,7 @@ class SSH(object):
             if not suppress_logs:
                 for line in lines:
                     ssh_response.append(line)
-                    p_trace('  <--  %s' % line)
+                    p_trace(f'  <--  {line}')
             else:
                 for line in lines:
                     ssh_response.append(line)

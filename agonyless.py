@@ -58,7 +58,7 @@ def main():
         ssh2 = ssh_drv.SSH()
         mp_test = ssh.monitor_passwd
         ap_test = ssh.admin_passwd
-        p_trace('Confirming new usernames and passwords')
+        p_trace('Confirming new usernames and passwords', 'DEBUG2')
         if ssh2.open(ne, role, uname, mp_test, port=port, role=role, monitor_passwd='agni1234', admin_passwd=ap_test):
             if not ssh2.send('admin'):
                 overall_result = False
