@@ -4,6 +4,7 @@ import ssh_lib
 import yaml
 import pdb
 from cmn_lib import p_trace
+from colorama import Fore
 
 __version__ = '0.1'
 
@@ -42,7 +43,7 @@ def main():
         # Establish the ssh session & memo the version
         ssh = ssh_drv.SSH()
         if not ssh.open(ne, role, uname, mp, port=port, role=role, monitor_passwd=mp, admin_passwd=ap):
-            p_trace('Unable to log into host - game over!', 'ERROR')
+            p_trace(Fore.RED + 'Unable to log into host - game over!'+ Fore.RESET, 'ERROR')
             return False
 
         # Update the passwords
@@ -58,7 +59,7 @@ def main():
         ssh2 = ssh_drv.SSH()
         mp_test = ssh.monitor_passwd
         ap_test = ssh.admin_passwd
-        p_trace('Confirming new usernames and passwords')
+        p_trace(Fore.YELLOW + 'Confirming new usernames and passwords' + Fore.RESET)
         if ssh2.open(ne, role, uname, mp_test, port=port, role=role, monitor_passwd='agni1234', admin_passwd=ap_test):
             if not ssh2.send('admin'):
                 overall_result = False
@@ -68,7 +69,8 @@ def main():
         if overall_result:
             ssh_lib.cli_save_config(ssh)
         else:
-            p_trace(f'Aborting due to failure updating password for  user {user} on CPE {ne}', 'ERROR')
+            p_trace(Fore.RED + f'Aborting due to failure updating password for  user {user} on CPE {ne}', 'ERROR')
+            p_trace(Fore.RESET)
 
     return overall_result
 
