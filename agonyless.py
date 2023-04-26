@@ -4,6 +4,7 @@ import ssh_lib
 import yaml
 import pdb
 from cmn_lib import p_trace
+from colorama import Fore
 
 __version__ = '0.1'
 
@@ -27,6 +28,7 @@ def main():
     for ne in ne_conf['network_entities']:
 
         # Prompt between each CPE
+        # print(Fore.CYAN + f" CONNECTING TO {ne}" + Fore.RESET)
         prompt = input('Are you ready to continue? y to continue:\n')
         if prompt != 'y':
             p_trace('Quitting')
